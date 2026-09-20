@@ -834,7 +834,7 @@
     micromatch "^4.0.4"
     walker "^1.0.8"
 
-"@expo/metro-runtime@^57.0.16":
+"@expo/metro-runtime@^57.0.16", "@expo/metro-runtime@~57.0.16":
   version "57.0.16"
   resolved "https://registry.yarnpkg.com/@expo/metro-runtime/-/metro-runtime-57.0.16.tgz#01570c6564c53e2529f4d4c81ea6c3dd862b8e88"
   integrity sha512-x43WgZoICpp37BhDV7vixe0bNxbVPPGaBLHYc98ZJ8MU+UC2dk39Y2XvkfYMRRbAUSIkCIJiwdERnptlPg0Ckw==
@@ -2057,6 +2057,11 @@ expo-device@~57.0.2:
   integrity sha512-1A0/FICR3CgrH43FeiDQP3l5eHDmiMoh4EjXfhfoHHkMgdBQdyD0kwDWskiGZlQ3E0Nd0LHkCFH6vJ1ofm/jow==
   dependencies:
     ua-parser-js "^0.7.33"
+
+expo-doctor@^1.20.4:
+  version "1.20.4"
+  resolved "https://registry.yarnpkg.com/expo-doctor/-/expo-doctor-1.20.4.tgz#195f91dfeaf63fd841d91bb9a22b1906f0ed8293"
+  integrity sha512-Jm1lIqVdO8br9wiqTg5QhJ1u4zLWAhoue4bXsEuzW543vC3XY+U0cpEOmiLkvJhTTgZgIK+24l4i8VzyZ2VLMg==
 
 expo-file-system@~57.0.7:
   version "57.0.7"
