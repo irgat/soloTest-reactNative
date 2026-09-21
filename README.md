@@ -1,56 +1,75 @@
-# Welcome to your Expo app 👋
+SoloTest React Native
+---
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+React Native TypeScript Code Example
 
-## Get started
+### About:
 
-1. Install dependencies
+A peg solitaire game for tablets, built with React Native and Expo.
 
-   ```bash
-   npm install
-   ```
+### Prerequisites:
 
-2. Start the app
+- [nvm](https://nodejs.org/en/download/package-manager)
+  ```
+  $ nvm install 24
+  $ nvm use 24
+  ```
 
-   ```bash
-   npx expo start
-   ```
+- [yarn](https://classic.yarnpkg.com/lang/en/docs/install)
+  ```
+  $ npm install --global yarn
+  ```
 
-In the output, you'll find options to open the app in a
+#### iOS:
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- [Xcode](https://developer.apple.com/xcode/), with the iOS platform installed
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+#### Android:
 
-## Get a fresh project
+- [Android Studio](https://developer.android.com/studio), installed with the Standard setup
 
-When you're ready, run:
+- A tablet virtual device, created in Android Studio's Device Manager
 
-```bash
-npm run reset-project
+- Android SDK paths in your shell profile, such as `~/.zshrc`
+  ```
+  $ cat >> ~/.zshrc <<'EOF'
+  export ANDROID_HOME=$HOME/Library/Android/sdk
+  export PATH=$PATH:$ANDROID_HOME/emulator
+  export PATH=$PATH:$ANDROID_HOME/platform-tools
+  EOF
+  ```
+  Then open a new terminal.
+
+### How to set up:
+
+```
+$ git clone https://github.com/irgat/soloTest-reactNative.git soloTest-reactNative
+$ cd soloTest-reactNative
+$ yarn
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Dev mode:
 
-### Other setup steps
+```
+$ yarn start
+```
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+Press `i` for iOS or `a` for Android. Use `shift`+`i` or `shift`+`a` to pick a specific device.
 
-## Learn more
+Alternatively, run a target device directly:
 
-To learn more about developing your project with Expo, look at the following resources:
+```
+$ yarn ios
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```
+$ yarn android
+```
 
-## Join the community
+### Production build:
 
-Join our community of developers creating universal apps.
+```
+$ yarn expo export
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+The build output goes to `dist`. This is a JavaScript bundle, not an installable app.

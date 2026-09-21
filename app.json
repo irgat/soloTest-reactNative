@@ -1,14 +1,15 @@
 {
   "expo": {
-    "name": "soloTest-reactNative",
+    "name": "Solo Test",
     "slug": "soloTest-reactNative",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "landscape",
     "icon": "./assets/images/icon.png",
     "scheme": "solotestreactnative",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
