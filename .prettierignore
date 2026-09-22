@@ -1,0 +1,6 @@
+.expo
+android
+dist
+ios
+web-build
+yarn.lock
