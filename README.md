@@ -10,6 +10,7 @@ A peg solitaire game for tablets, built with React Native and Expo.
 ### Prerequisites:
 
 - [nvm](https://nodejs.org/en/download/package-manager)
+
   ```
   $ nvm install 24
   $ nvm use 24
