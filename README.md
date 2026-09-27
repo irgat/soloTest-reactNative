@@ -74,3 +74,15 @@ $ yarn expo export
 ```
 
 The build output goes to `dist`. This is a JavaScript bundle, not an installable app.
+
+### Tests:
+
+```
+$ yarn test
+```
+
+With a coverage report, written to `coverage`:
+
+```
+$ yarn test:coverage
+```
