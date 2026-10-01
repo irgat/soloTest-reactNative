@@ -1,6 +1,8 @@
 SoloTest React Native
 ---
 
+[![ci](https://github.com/irgat/soloTest-reactNative/actions/workflows/ci.yml/badge.svg)](https://github.com/irgat/soloTest-reactNative/actions/workflows/ci.yml)
+
 React Native TypeScript Code Example
 
 ### About:
@@ -12,8 +14,8 @@ A peg solitaire game for tablets, built with React Native and Expo.
 - [nvm](https://nodejs.org/en/download/package-manager)
 
   ```
-  $ nvm install 24
-  $ nvm use 24
+  $ nvm install
+  $ nvm use
   ```
 
 - [yarn](https://classic.yarnpkg.com/lang/en/docs/install)
@@ -86,3 +88,11 @@ With a coverage report, written to `coverage`:
 ```
 $ yarn test:coverage
 ```
+
+### Before committing:
+
+```
+$ yarn verify
+```
+
+This runs the linter, the format check, the type check and the tests. CI runs the same checks, plus a dependency check with `yarn expo-doctor` and a production build with `yarn expo export`. The linter treats warnings as errors. If the format check fails, run `yarn format`.
