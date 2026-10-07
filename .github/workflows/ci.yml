@@ -1,0 +1,57 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+
+      - id: install
+        run: yarn install --frozen-lockfile
+
+      - run: yarn expo-doctor
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+
+      - run: yarn lint
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+
+      - run: yarn format:check
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+
+      # Regenerates expo-env.d.ts and .expo/types/, both gitignored.
+      # Without it the runner type-checks a different surface than the author does.
+      # expo customize swallows its own errors and exits 0, so assert the output.
+      - name: Generate the Expo type files
+        run: |
+          yarn expo customize tsconfig.json
+          test -f expo-env.d.ts
+          test -f .expo/types/router.d.ts
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+
+      - run: yarn typecheck
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+
+      - run: yarn test
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+
+      - run: yarn expo export
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
