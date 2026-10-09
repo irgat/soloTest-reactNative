@@ -1,0 +1,63 @@
+name: review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: write
+  # The action exchanges an OIDC token even when it authenticates with the OAuth
+  # token, so this is required or it fails before it reaches authentication.
+  id-token: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    # Set CLAUDE_REVIEW to true as a repository variable in the mirror that holds
+    # the token. An unset variable reads as an empty string, so this job is
+    # skipped everywhere else. Never make it a required check where it is skipped.
+    if: ${{ vars.CLAUDE_REVIEW == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      # fetch-depth 0 because the brief diffs against the merge base, which a
+      # shallow clone does not have. checkout writes remote-tracking refs and no
+      # local branch, so the base is origin/<base_ref> and the prompt says so.
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      # Node on PATH and a warm yarn cache, nothing more. No check is duplicated
+      # from ci.yml. Without this the runner image decides the Node and Yarn
+      # majors, and a Yarn 2 default would break --frozen-lockfile.
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # Creates the comment on the pull request and gives the agent the tool
+          # that writes into it. Without this it is told to comment and cannot.
+          track_progress: true
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+            BASE: origin/${{ github.base_ref }}
+
+            Use the pr-review subagent to review this pull request against BASE.
+            Then write the subagent's report into the tracking comment,
+            word for word. Do not shorten it and do not add your own summary.
+          display_report: true
+          # Agent is the tool that runs a subagent. Leaving it out ends the run in
+          # two turns having done nothing. Task is the same tool's older name.
+          # Bash is scoped to git because anything else would execute code from
+          # the pull request in a job holding three tokens. The brief's
+          # permission to run yarn applies to a local review, not to this one.
+          claude_args: |
+            --allowedTools "Agent,Task,Read,Glob,Grep,Bash(git diff:*),Bash(git log:*),Bash(git show:*),Bash(git status:*),Bash(git ls-files:*),mcp__github_comment__update_claude_comment"
