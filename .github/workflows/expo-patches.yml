@@ -1,0 +1,80 @@
+name: expo patches
+
+on:
+  schedule:
+    # Daily. Expo publishes patches as fixes land, on no announced schedule, so
+    # this is latency rather than cadence matching: a patch is known the next
+    # morning instead of the next week. An odd minute because scheduled runs on
+    # the hour queue behind everyone else's.
+    - cron: "13 7 * * *"
+  # Also runnable by hand, from the Actions tab.
+  workflow_dispatch:
+
+# Declared here rather than widening the repository default, which stays at
+# read contents and packages. ci.yml and review.yml are unaffected.
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  patches:
+    # The mirror is reset every round, so a pull request opened there is noise.
+    if: ${{ !github.event.repository.fork }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+
+      - run: yarn install --frozen-lockfile
+
+      # Resolves every Expo package to the version the installed SDK expects.
+      # Writes package.json and yarn.lock, nothing else.
+      - run: yarn expo install --fix
+
+      # Reported, not gated. A bump that still leaves drift is worth seeing in
+      # the pull request body rather than failing the job that would open it.
+      - id: doctor
+        run: yarn expo-doctor
+        continue-on-error: true
+
+      # The pull request this opens shows ci.yml as awaiting approval, with an
+      # Approve and run button. GITHUB_TOKEN cannot start a workflow run on its
+      # own; a pull request it opens is the documented exception, and the run is
+      # approval-required. One click, then the checks report as usual.
+      - name: Open a pull request if anything drifted
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOCTOR: ${{ steps.doctor.outcome }}
+        run: |
+          if git diff --quiet -- package.json yarn.lock; then
+            echo "No drift. Nothing to do."
+            exit 0
+          fi
+          BRANCH=repo/expoPatches
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$BRANCH"
+          git add package.json yarn.lock
+          git commit -m "build: updated the expo packages"
+          # Force, because yesterday's branch may still exist. An open pull
+          # request from it updates rather than duplicating, so an unmerged
+          # bump collects the next day's drift instead of stacking up.
+          git push --force origin "$BRANCH"
+          if gh pr view "$BRANCH" --json number >/dev/null 2>&1; then
+            echo "A pull request is already open for $BRANCH. Updated it."
+            exit 0
+          fi
+          gh pr create --base main --head "$BRANCH" \
+            --title "build: updated the expo packages" \
+            --body "Opened automatically. \`yarn expo install --fix\` resolved the Expo packages to the versions the installed SDK expects. No code changed.
+
+          \`expo-doctor\` after the fix: **$DOCTOR**. A failure there means the fix could not resolve everything and the branch needs a look."
