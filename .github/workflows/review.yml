@@ -31,13 +31,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Node on PATH and a warm yarn cache, nothing more. No check is duplicated
-      # from ci.yml. Without this the runner image decides the Node and Yarn
-      # majors, and a Yarn 2 default would break --frozen-lockfile.
+      # Pins the Node major from .nvmrc rather than taking the runner image's.
+      # No yarn cache: nothing in this job runs yarn.
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
-          cache: yarn
 
       - uses: anthropics/claude-code-action@v1
         with:
@@ -56,8 +54,22 @@ jobs:
           display_report: true
           # Agent is the tool that runs a subagent. Leaving it out ends the run in
           # two turns having done nothing. Task is the same tool's older name.
-          # Bash is scoped to git because anything else would execute code from
-          # the pull request in a job holding three tokens. The brief's
-          # permission to run yarn applies to a local review, not to this one.
+          #
+          # Bash is scoped to read-only git subcommands, which reduces what a
+          # pull request can make the job run. It is not a boundary: git diff
+          # --no-index reads any file, narrowing the allow to
+          # Bash(git diff origin/:*) did not stop it, and a Read deny cannot
+          # reach a Bash command. Both were tested and the reasoning is in the
+          # brief.
+          #
+          # The deny rule does work. It blocks a Read of the three places the
+          # job's secrets sit: remote.origin.url in .git/config, the file under
+          # RUNNER_TEMP that .git/config names, and /proc/self/environ, which
+          # holds the OAuth token. Two leading slashes mean the filesystem
+          # root; one would anchor at the working directory and match nothing.
+          #
+          # This list cannot make the job read only. The action adds git add,
+          # commit, rm and its push script whatever we pass.
           claude_args: |
             --allowedTools "Agent,Task,Read,Glob,Grep,Bash(git diff:*),Bash(git log:*),Bash(git show:*),Bash(git status:*),Bash(git ls-files:*),mcp__github_comment__update_claude_comment"
+            --disallowedTools "Read(.git/**),Read(//home/runner/work/_temp/**),Read(//proc/**)"
