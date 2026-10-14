@@ -95,4 +95,10 @@ $ yarn test:coverage
 $ yarn verify
 ```
 
-This runs the linter, the format check, the type check and the tests. CI runs the same checks, plus a dependency check with `yarn expo-doctor` and a production build with `yarn expo export`. The linter treats warnings as errors. If the format check fails, run `yarn format`.
+This runs the linter, the format check, the type check and the tests. The linter treats warnings as errors. If the format check fails, run `yarn format`.
+
+### Workflows:
+
+- **`ci.yml`** runs on every push and pull request. It runs the four checks above, plus a dependency check with `yarn expo-doctor` and a production build with `yarn expo export`.
+- **`expo-patches.yml`** runs daily, and opens a pull request when `yarn expo install --fix` finds the Expo packages have drifted from the versions the installed SDK expects. It can also be run by hand from the Actions tab.
+- **`review.yml`** runs a Claude review on pull requests. It is off unless `CLAUDE_REVIEW` and `CLAUDE_CODE_OAUTH_TOKEN` are set on the repository.
