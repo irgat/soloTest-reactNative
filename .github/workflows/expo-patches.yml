@@ -69,7 +69,7 @@ jobs:
           # request from it updates rather than duplicating, so an unmerged
           # bump collects the next day's drift instead of stacking up.
           git push --force origin "$BRANCH"
-          if gh pr view "$BRANCH" --json number >/dev/null 2>&1; then
+          if [ "$(gh pr list --head "$BRANCH" --state open --json number --jq 'length')" -gt 0 ]; then
             echo "A pull request is already open for $BRANCH. Updated it."
             exit 0
           fi
