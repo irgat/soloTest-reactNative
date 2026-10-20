@@ -41,7 +41,6 @@ If you needed something that `AGENTS.md` did not tell you, say so at the end.
 Each of these has been raised by a reviewer before and investigated. Do not raise them again.
 
 - **A missing `moduleNameMapper` block in the Jest config.** `jest-expo` builds one from the `tsconfig.json` paths. Their order matters, and `AGENTS.md` covers it.
-- **The unset `ios.bundleIdentifier`, the unset `android.package` and the missing `ios.requireFullScreen`.** All three are deferred until the first native build. Expo Go uses its own identifier and its own `Info.plist`, so none of them does anything until then. `requireFullScreen` is what lets a landscape-only iPad build pass App Store validation.
 - **Format on save is off, deliberately.** `yarn verify` reports formatting and `yarn format` fixes it.
 - **The workflow listing the four checks separately instead of running `yarn verify`.** Deliberate. Separate steps report all four failures; `&&` would stop at the first.
 - **The `expo customize tsconfig.json` step in CI.** It generates `expo-env.d.ts` and `.expo/types/router.d.ts`, both gitignored, so without it the runner type-checks a different surface than the author does. It starts no dev server.

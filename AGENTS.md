@@ -43,6 +43,13 @@ Solo Test is a peg solitaire game for tablets, built with Expo and React Native.
 - `expo lint` takes a fixed set of flags. Anything else goes after `--`, as in `expo lint -- --format compact`.
 - `yarn lint` fails on warnings. Fix them rather than silencing them with `eslint-disable`.
 
+# Native build
+
+- `ios/` and `android/` are gitignored. `yarn ios` and `yarn android` generate them, compile the app and install it on a simulator or emulator that is already running.
+- Run `yarn expo prebuild --clean` after changing `app.json`. A native change does not show up without it.
+- `expo prebuild` rewrites the `ios` and `android` script keys when they hold `expo start --ios` or `expo start --android`. Dev mode lives under `dev:ios` and `dev:android` for that reason. Prebuild never inspects those two keys.
+- Expo Go cannot show the icon, the splash or the orientation. Those live in the native project and Expo Go is Expo's own binary. A development build cannot show the splash either, because `expo-dev-client` has one of its own.
+
 # Architecture
 
 - Screens take props and do not read global state. Use stub props until the game rules exist.
