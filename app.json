@@ -1,15 +1,17 @@
 {
   "expo": {
     "name": "Solo Test",
-    "slug": "soloTest-reactNative",
+    "slug": "soloTest",
     "version": "1.0.0",
     "orientation": "landscape",
     "icon": "./assets/images/icon.png",
-    "scheme": "solotestreactnative",
+    "scheme": "solotest",
     "userInterfaceStyle": "automatic",
     "ios": {
       "icon": "./assets/expo.icon",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "requireFullScreen": true,
+      "bundleIdentifier": "com.irgat.soloTest"
     },
     "android": {
       "adaptiveIcon": {
@@ -18,7 +20,8 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.irgat.soloTest"
     },
     "web": {
       "output": "static",
@@ -32,6 +35,14 @@
           "backgroundColor": "#208AEF",
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 76
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "enableSceneSupport": true
+          }
         }
       ]
     ],

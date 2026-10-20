@@ -59,7 +59,19 @@ $ yarn start
 
 Press `i` for iOS or `a` for Android. Use `shift`+`i` or `shift`+`a` to pick a specific device.
 
+This serves JavaScript to an app that is already installed, so a change to `app.json` does not show up here.
+
 Alternatively, run a target device directly:
+
+```
+$ yarn dev:ios
+```
+
+```
+$ yarn dev:android
+```
+
+### Native build:
 
 ```
 $ yarn ios
@@ -68,6 +80,20 @@ $ yarn ios
 ```
 $ yarn android
 ```
+
+Each one compiles the app and installs it on a simulator or emulator that is already running. The first run takes several minutes.
+
+Add `-d` to pick a different one:
+
+```
+$ yarn ios -d
+```
+
+```
+$ yarn android -d
+```
+
+If a change to `app.json` does not show up, run `yarn expo prebuild --clean` to regenerate the `ios` and `android` folders which are gitignored.
 
 ### Production build:
 
