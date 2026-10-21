@@ -55,12 +55,15 @@ jobs:
           # Agent is the tool that runs a subagent. Leaving it out ends the run in
           # two turns having done nothing. Task is the same tool's older name.
           #
-          # Bash is scoped to read-only git subcommands, which reduces what a
-          # pull request can make the job run. It is not a boundary: git diff
-          # --no-index reads any file, narrowing the allow to
-          # Bash(git diff origin/:*) did not stop it, and a Read deny cannot
-          # reach a Bash command. Both were tested and the reasoning is in the
-          # brief.
+          # Bash is scoped to read-only git subcommands plus file, which
+          # reduces what a pull request can make the job run. file is on the
+          # list because nothing else lets the reviewer check a binary asset's
+          # format or dimensions. It prints a type description, not contents.
+          #
+          # It is not a boundary: git diff --no-index reads any file,
+          # narrowing the allow to Bash(git diff origin/:*) did not stop it,
+          # and a Read deny cannot reach a Bash command. Both were tested and
+          # the reasoning is in the brief.
           #
           # The deny rule does work. It blocks a Read of the three places the
           # job's secrets sit: remote.origin.url in .git/config, the file under
@@ -71,5 +74,5 @@ jobs:
           # This list cannot make the job read only. The action adds git add,
           # commit, rm and its push script whatever we pass.
           claude_args: |
-            --allowedTools "Agent,Task,Read,Glob,Grep,Bash(git diff:*),Bash(git log:*),Bash(git show:*),Bash(git status:*),Bash(git ls-files:*),mcp__github_comment__update_claude_comment"
+            --allowedTools "Agent,Task,Read,Glob,Grep,Bash(git diff:*),Bash(git log:*),Bash(git show:*),Bash(git status:*),Bash(git ls-files:*),Bash(file:*),mcp__github_comment__update_claude_comment"
             --disallowedTools "Read(.git/**),Read(//home/runner/work/_temp/**),Read(//proc/**)"
