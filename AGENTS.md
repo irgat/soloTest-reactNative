@@ -1,6 +1,6 @@
 # Expo HAS CHANGED
 
-Read the exact versioned docs at https://docs.expo.dev/versions/v57.0.0/ before writing any code.
+Read the exact versioned docs at https://docs.expo.dev/versions/v58.0.0/ before writing any code.
 
 # What this is
 
@@ -60,7 +60,8 @@ Solo Test is a peg solitaire game for tablets, built with Expo and React Native.
 - Tests live under `src/__tests__/`, mirroring the path of the code they cover.
 - Never put a test file under `src/app/`. Expo Router treats files there as routes.
 - `render()` from `@testing-library/react-native` returns a Promise. Await it.
-- Jest stays on 29. `jest-expo` 57 does not work with Jest 30.
+- Jest tracks `jest-expo`, which pins it to one major. Do not move Jest on its own.
+- Bump `@react-native/jest-preset` to match `react-native` on every minor. Its caret cannot follow, and `expo install --fix` ignores it.
 - The Jest config is the `jest` block in `package.json`, not a `jest.config.js`.
 
 # TypeScript
